@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+		integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.0/css/jquery.dataTables.css">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Eczar&display=swap" rel="stylesheet">
+	<style type="text/css">
+		h1 {
+			font-family: 'Eczar', serif;
+		}
+
+		body {
+			background: url("bg.jpg") 100% 100%;
+		}
+
+		.hide {
+			display: none !important;
+		}
+	</style>
+
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	<!-- <script src="https://cdn.datatables.net/1.11.0/css/jquery.dataTables.min.css"></script> -->
+
+	<title>Analisis Sentimen</title>
+</head>
+
+<body>
+	<div class="container pt-4">
+		<div class="row mt-4">
+
+			<div class="col-12 text-center mb-4">
+				<h1>ANALISIS SENTIMEN TWITTER</h1>
+				<h2>#IndonesiaTerserah</h2>
+			</div>
+
+			<div class="col-7 mx-auto my-4">
+				<button class="btn btn-primary btn-lg btn-block" id="tombol-mulai" onclick="start()">START</button>
+			</div>
+
+			<div class="col-12 mx-auto mt-4">
+				<div class="card hide" id="display-none">
+					<div class="card-header">
+						<h4>Analysis Report</h4>
+					</div>
+					<div class="card-body">
+						<!-- analysis report -->
+						<div class="row ">
+							<!-- classification report -->
+							<div class="col-6">
+								<div class="row">
+									<div class="col">
+										<h5>Accuracy</h5>
+										<h2 class="display-4" id="accuracy">87.28%</h2>
+									</div>
+									<div class="col">
+										<h5>Recall</h5>
+										<div class="row ">
+											<div class="col mx-auto"><label for="">
+													<h6>Kelas Negatif:</h6>
+												</label></div>
+											<div class="col mx-auto">
+												<p id="report_recall_neg">recall neg</p>
+											</div>
+										</div>
+										<div class="row ">
+											<div class="col mx-auto"><label for="">
+													<h6>Kelas Positif:</h6>
+												</label></div>
+											<div class="col mx-auto">
+												<p id="report_recall_pos">recall pos</p>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row mt-4">
+									<div class="col">
+										<h5>Precision</h5>
+										<div class="row">
+											<div class="col mx-auto"><label for="">
+													<h6>Kelas Negatif:</h6>
+												</label></div>
+											<div class="col mx-auto">
+												<p id="report_precision_neg">precision neg</p>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col mx-auto"><label for="">
+													<h6>Kelas Positif:</h6>
+												</label></div>
+											<div class="col mx-auto">
+												<p id="report_precision_pos">precision pos</p>
+											</div>
+										</div>
+									</div>
+									<div class="col">
+										<h5>F-1 Score</h5>
+										<div class="row ">
+											<div class="col mx-auto"><label for="">
+													<h6>Kelas Negatif:</h6>
+												</label></div>
+											<div class="col mx-auto">
+												<p id="report_f1_score_neg">f1_score neg</p>
+											</div>
+										</div>
+										<div class="row ">
+											<div class="col mx-auto"><label for="">
+													<h6>Kelas Positif:</h6>
+												</label></div>
+											<div class="col mx-auto">
+												<p id="report_f1_score_pos">f1_score pos</p>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<!-- sentiment report -->
+							<div class="col-6 mx-auto text-center">
+								<h2 class="display-1 mt-4" id="persentasi"></h2>
+								<p class="h4 mt-4" id="sentiment"></p>
+							</div>
+						</div>
+						<hr>
+						<!-- tabel sentiment -->
+						<div class="row mt-4">
+							<!-- tabel Positif -->
+							<div class="col-6 table-responsive">
+								<h5>Tweet Positif</h5>
+								<table class="table table-bordered" id="myTable" width="100%" cellspacing="0">
+									<thead>
+										<tr>
+											<th>No</th>
+											<th>Tweet</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td>1</td>
+											<td>Aapayaaaaaaaaaaaa</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+
+							<!-- tabel Negatif -->
+							<div class="col-6">
+								<h5>Tweet Negatif</h5>
+								<table class="table table-bordered" id="myTable" width="100%" cellspacing="0">
+									<thead>
+										<tr>
+											<th>No</th>
+											<th>Tweet</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td>1</td>
+											<td>Aapayaaaaaaaaaaaa</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+	<!-- Optional JavaScript -->
+	<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+		integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+		crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+		integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+		crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+		integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+		crossorigin="anonymous"></script>
+
+	<!-- <script src="https://cdn.datatables.net/1.11.0/js/jquery.dataTables.min.js"></script> -->
+
+	<!-- <script>
+		$(document).ready(function () {
+			$('#myTable').DataTable(
+				{
+					paging: true
+				}
+			);
+		});
+	</script> -->
+
+	<script type="text/javascript">
+		const getResult = async () => {
+			return await axios.get('http://localhost:5000/').then(res => res.data)
+		}
+
+		const testConnection = async () => {
+			return await axios.get('http://localhost:5000/test').then(res => res.data);
+		}
+
+		const start = async () => {
+			document.getElementById('tombol-mulai').disabled = true;
+			document.getElementById('tombol-mulai').innerText = "MOHON TUNGGU ...";
+
+			const display = document.getElementById('display-none');
+
+			const result = await getResult().then(res => res);
+
+			console.log(result);
+
+			document.getElementById('sentiment').innerText = `Sentimen ${result.sentiment}`;
+			document.getElementById('accuracy').innerText = `Accuracy ${result.accuracy}%`;
+			document.getElementById('report_precision_pos').innerText = ` ${result.report_precision_pos}`;
+			document.getElementById('report_precision_neg').innerText = ` ${result.report_precision_neg}`;
+			document.getElementById('report_recall_pos').innerText = ` ${result.report_recall_pos}`;
+			document.getElementById('report_recall_neg').innerText = ` ${result.report_recall_neg}`;
+			document.getElementById('report_f1_score_pos').innerText = ` ${result.report_f1_score_pos}`;
+			document.getElementById('report_f1_score_neg').innerText = ` ${result.report_f1_score_neg}`;
+			// document.getElementById('total_positif').innerText = `Sentiment ${result.total_positif}`;
+			// document.getElementById('total_negatif').innerText = `Sentiment ${result.total_negatif}`;
+			document.getElementById('persentasi').innerText = ` ${result.persentasi}%`;
+
+			display.classList.toggle('hide');
+
+			// document.getElementById('tombol-mulai').disabled = false;
+			document.getElementById('tombol-mulai').innerText = "DONE";
+		}
+
+		// const showConnection = async () => {
+		// 	const consoleBox = document.getElementById('test-connection');
+
+		// 	const result = await testConnection().then(res => res.message);
+
+		// 	consoleBox.innerText = result.toUpperCase();
+		// }
+
+		// window.addEventListener('load', async () => {
+		// 	await showConnection()
+		// });
+
+	</script>
+</body>
+
+</html>
