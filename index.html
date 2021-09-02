@@ -133,41 +133,52 @@
 						<!-- tabel sentiment -->
 						<div class="row mt-4">
 							<!-- tabel Positif -->
-							<div class="col-6 table-responsive">
-								<h5>Tweet Positif</h5>
-								<table class="table table-bordered" id="myTable" width="100%" cellspacing="0">
-									<thead>
-										<tr>
-											<th>No</th>
-											<th>Tweet</th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr>
-											<td>1</td>
-											<td>Aapayaaaaaaaaaaaa</td>
-										</tr>
-									</tbody>
-								</table>
+							<div style="height: 500px !important; overflow-y: scroll !important;">
+								<div class="col-6 table-responsive">
+									<h5>Tweet Positif</h5>
+									<table class="table table-bordered" id="myTable" width="100%" cellspacing="0">
+										<thead>
+											<tr>
+												<th>No</th>
+												<th>Tweet</th>
+											</tr>
+										</thead>
+										<tbody id="dokumen_positif">
+											<tr>
+												<td>1</td>
+												<td>-</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
 							</div>
 
 							<!-- tabel Negatif -->
 							<div class="col-6">
-								<h5>Tweet Negatif</h5>
-								<table class="table table-bordered" id="myTable" width="100%" cellspacing="0">
-									<thead>
-										<tr>
-											<th>No</th>
-											<th>Tweet</th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr>
-											<td>1</td>
-											<td>Aapayaaaaaaaaaaaa</td>
-										</tr>
-									</tbody>
-								</table>
+								<div style="height: 500px !important; overflow-y: scroll !important;">
+									<h5>Tweet Negatif</h5>
+									<table class="table table-bordered" id="myTable" width="100%" cellspacing="0">
+										<thead>
+											<tr>
+												<th>No</th>
+												<th>Tweet</th>
+											</tr>
+										</thead>
+										<tbody id="dokumen_negatif">
+											<tr>
+												<td>1</td>
+												<td>-</td>
+											</tr>
+										</tbody>
+									</table>
+									
+								</div>
+							</div>
+
+							<div class="col-12">
+								<audio autoplay id="musik">
+									<source src="asset/wmam.flac" type="audio/flac">
+								</audio>
 							</div>
 						</div>
 					</div>
@@ -203,16 +214,21 @@
 
 	<script type="text/javascript">
 		const getResult = async () => {
-			return await axios.get('http://localhost:5000/').then(res => res.data)
+			return await axios.get('http://localhost:5000/').then(res => res.data);
 		}
 
 		const testConnection = async () => {
 			return await axios.get('http://localhost:5000/test').then(res => res.data);
 		}
 
+		const getDocument = async () => {
+			return await axios.get('http://localhost:5000/dokumen').then(res => res.data);
+		}
+
 		const start = async () => {
 			document.getElementById('tombol-mulai').disabled = true;
 			document.getElementById('tombol-mulai').innerText = "MOHON TUNGGU ...";
+			document.getElementById('musik').play()
 
 			const display = document.getElementById('display-none');
 
@@ -228,9 +244,37 @@
 			document.getElementById('report_recall_neg').innerText = ` ${result.report_recall_neg}`;
 			document.getElementById('report_f1_score_pos').innerText = ` ${result.report_f1_score_pos}`;
 			document.getElementById('report_f1_score_neg').innerText = ` ${result.report_f1_score_neg}`;
+			document.getElementById('persentasi').innerText = ` ${result.persentasi}%`;
+
+			const dokumen = await getDocument().then(res => res);
+
+			console.log(dokumen);
+ 
+ 			let temp = ``
+ 			let nomor = 1;
+
+			dokumen.positif.forEach(dok => {
+				temp += `<tr>
+										<td>${nomor++}</td>
+										<td>${dok}</td>
+									</tr>`
+			});
+
+			document.getElementById('dokumen_positif').innerHTML = temp;
+			
+			temp = ``
+ 			nomor = 1;
+
+			dokumen.negatif.forEach(dok => {
+				temp += `<tr>
+										<td>${nomor++}</td>
+										<td>${dok}</td>
+									</tr>`
+			});
+
+			document.getElementById('dokumen_negatif').innerHTML = temp;
 			// document.getElementById('total_positif').innerText = `Sentiment ${result.total_positif}`;
 			// document.getElementById('total_negatif').innerText = `Sentiment ${result.total_negatif}`;
-			document.getElementById('persentasi').innerText = ` ${result.persentasi}%`;
 
 			display.classList.toggle('hide');
 

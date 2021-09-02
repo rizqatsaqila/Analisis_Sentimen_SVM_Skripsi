@@ -125,6 +125,22 @@ def index():
 
     return jsonify(data), 200
 
+@app.route('/dokumen', methods=['GET'])
+def dokumen():
+    dataset = pd.read_excel('dataset/pretrained_dataset_test.xlsx')
+
+    positif_data = list()
+    negatif_data = list()
+
+    for (index, row) in dataset.iterrows():
+        if row['label'] == 'pos':
+            positif_data.append(row['tweet'])
+        else:
+            negatif_data.append(row['tweet'])
+
+    data = {"positif": positif_data, "negatif": negatif_data}
+
+    return jsonify(data), 200
 
 @app.route('/test', methods=['GET'])
 def test():
